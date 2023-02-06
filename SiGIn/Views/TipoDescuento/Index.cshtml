@@ -1,0 +1,139 @@
+﻿@model IEnumerable<SiGIn.Models.TipoDescuento.TipoDescuentoRequestVM>
+@{
+    ViewData["Title"] = "Tipos de descuento";
+}
+<section class="content-header">
+    <h1>
+        Tipos de Descuento
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Tipo de Descuentos</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div id="modal-placeholder"></div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title mr-4">Gestionar Tipos de Descuento</h3>
+                    <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#add-tipo-descuento" data-url="@Url.Action("CreateTipoDescuento", "TipoDescuento")">
+                        Nuevo
+                    </button>
+                </div>
+
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="myDatatable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Nombre</th>
+                                <th>Description</th>
+                                <th>Created</th>
+                                <th>Updated</th>
+                                <th>Operations</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+
+<!-- DataTables -->
+<!-- page script -->
+<script>
+$(function () {
+    $("#btnHideModal").click(function () {
+        $("#editModal").modal('hide');
+    });
+
+    $('#myDatatable').DataTable({
+        "processing": true, // for show progress bar
+        "serverSide": true, // for process server side
+        "filter": true, // this is for disable filter (search box)
+        "orderMulti": false, // for disable multiple column at once
+        "pageLength": 10,
+
+        "ajax": {
+            "url": "/TipoDescuento/IndexJsonAsync",
+            "type": "POST",
+            "datatype": "json"
+        },
+
+        "columnDefs": [
+            {
+                "targets": [5],
+                "searchable": false,
+                "orderable": false
+            },
+            {
+                "targets": [0],
+                "searchable": false,
+                "orderable": false,
+                "visible": false
+            }
+        ],
+
+        "columns": [
+            { "data": "id", "name": "Id", "autoWidth": true },
+            { "data": "name", "name": "Name", "autoWidth": true },
+            { "data": "description", "title": "Description", "name": "Description", "autoWidth": true },
+            { "data": "dateCreated", "name": "DateCreated", "autoWidth": true },
+            { "data": "dateUpdated", "name": "DateUpdated", "autoWidth": true },
+            {
+                "render": function (data, type, item, meta) {
+                    var editUrl =  "@Url.Action("EditTipoDescuentoAsync", "TipoDescuento")";
+                    return '<a class="edit-link" href="" onclick=Edit("' + item.id + '","' + editUrl + '") >Edit</a> | <a class="" href="/eliminar" onclick="Delete(' + item.id + ')">Delete</a>';
+                    //return '<button type="button" class="btn btn-primary" onclick=Edit("' + item.id + '") data-toggle="ajax-modal" data-target="#edit-tipo-descuento" data-url="@Url.Action("TipoDescuentoAsync", "TipoDescuento")">Edit</button>'
+                }
+            },
+            //{
+            //    data: null, render: function (data, type, row) {
+            //        return "<a href='#' class='btn btn-danger' onclick=Delete('" + row.id + "','" + row.name + "'); >Delete</a>";
+            //    }
+            //},
+
+        ]
+    });
+});
+    function Delete(itemId) {
+        event.preventDefault()
+        var id = itemId;
+        var name = 'item.name';
+        var txt;
+        var r = confirm("Are you sure you want to Delete '" + name + "'.?");
+        if (r == true) {
+            $.ajax(
+            {
+                type: "POST",
+                url: '@Url.Action("DeleteAsync", "TipoDescuento")',
+                data: {
+                    id: id
+                },
+                error: function (result) {
+                    alert("error");
+                },
+                success: function (result) {
+                    if (result == true) {
+                        var baseUrl="/Index";
+                        var table = $('#myDatatable').DataTable();
+                        table.ajax.reload();
+                    }
+                    else {
+                        alert("There is a problem, Try Later!");
+                    }
+                }
+            });
+        }
+    }
+</script>

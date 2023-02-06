@@ -1,0 +1,27 @@
+﻿@using SiGIn.Helpers
+<ul class="sidebar-menu" data-widget="tree">
+    <li class="header">Menu</li>
+    <!-- Optionally, you can add icons to the links -->
+    <li class="@Html.IsSelected(actions: "Index", controllers: "Home")">
+        <a href="@Url.Action("Index", "Home")"><i class="fa fa-home"></i><span>Home</span></a>
+    </li>
+    @*<li><a href="/Trabajador"><i class="fa fa-user"></i> <span>Trabajadores</span></a></li>*@
+    <li class="@Html.IsSelected(actions: "Index", controllers: "Trabajador")">
+        <a href="@Url.Action("Index", "Trabajador")"><i class="fa fa-user"></i><span>Trabajadores</span></a>
+    </li>
+    <li class="treeview @Html.IsSelected(actions: "Index", controllers: "TipoDescuento")">
+        <a href="#">
+            <i class="fa fa-link"></i> <span>Administracion</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li class="@Html.IsSelected(actions: "Index", controllers: "TipoDescuento")">
+                <a href="@Url.Action("Index", "TipoDescuento")">
+                    <i class="fa fa-money"></i><span>Tipo de Descuentos</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+</ul>
